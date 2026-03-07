@@ -2,6 +2,7 @@ import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { CompanyCard } from "@/components/company/company-card";
 import { Search } from "lucide-react";
 import { createMetadata } from "@/lib/utils/seo";
+import { getCompanyListSchema, getBreadcrumbSchema, JsonLd } from "@/lib/utils/schema";
 import type { Region, Company } from "@/lib/supabase/types";
 
 export const metadata = createMetadata({
@@ -80,6 +81,24 @@ export default async function CompaniesPage({ searchParams }: Props) {
 
   return (
     <div className="bg-slate-50 min-h-screen">
+      <JsonLd
+        data={getBreadcrumbSchema([
+          { name: "Home", url: "https://constructionrating.co.uk" },
+          { name: "Companies", url: "https://constructionrating.co.uk/companies" },
+        ])}
+      />
+      {companies.length > 0 && (
+        <JsonLd
+          data={getCompanyListSchema(
+            companies,
+            query
+              ? `Search results for "${query}"`
+              : category
+                ? `${category.replace("_", " ")} Companies`
+                : "UK Construction Companies"
+          )}
+        />
+      )}
       {/* Header */}
       <div className="bg-[#1e3a5f] text-white py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

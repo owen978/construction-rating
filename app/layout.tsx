@@ -2,6 +2,11 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
+import {
+  getOrganizationSchema,
+  getWebSiteSchema,
+  JsonLd,
+} from "@/lib/utils/schema";
 
 export const metadata: Metadata = {
   title: "Construction Rating | Rate & Review UK Construction Contractors",
@@ -33,6 +38,8 @@ export default function RootLayout({
   return (
     <html lang="en-GB">
       <body className="min-h-screen flex flex-col bg-white antialiased">
+        <JsonLd data={getOrganizationSchema()} />
+        <JsonLd data={getWebSiteSchema()} />
         <Header />
         <main className="flex-1">{children}</main>
         <Footer />

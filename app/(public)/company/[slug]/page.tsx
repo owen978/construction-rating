@@ -19,6 +19,11 @@ import { StarRatingDisplay } from "@/components/company/star-rating";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { formatCategory, getRatingLabel } from "@/lib/utils/ratings";
+import {
+  getCompanySchema,
+  getBreadcrumbSchema,
+  JsonLd,
+} from "@/lib/utils/schema";
 import type { Metadata } from "next";
 import type { Company, Review } from "@/lib/supabase/types";
 
@@ -82,6 +87,14 @@ export default async function CompanyPage({ params }: Props) {
 
   return (
     <div className="bg-slate-50 min-h-screen">
+      <JsonLd data={getCompanySchema(company, reviews)} />
+      <JsonLd
+        data={getBreadcrumbSchema([
+          { name: "Home", url: "https://constructionrating.co.uk" },
+          { name: "Companies", url: "https://constructionrating.co.uk/companies" },
+          { name: company.name, url: `https://constructionrating.co.uk/company/${company.slug}` },
+        ])}
+      />
       {/* Company Header */}
       <div className="bg-[#1e3a5f] text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
