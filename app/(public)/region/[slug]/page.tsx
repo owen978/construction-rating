@@ -31,13 +31,30 @@ async function getCompaniesByRegion(regionSlug: string): Promise<Company[]> {
   return (data || []) as Company[];
 }
 
-async function getAllRegions(): Promise<Region[]> {
+async function getAllRegionsWithCounts(): Promise<(Region & { computed_count: number })[]> {
   const supabase = await createServerSupabaseClient();
-  const { data } = await supabase
-    .from("regions")
-    .select("*")
-    .order("name", { ascending: true });
-  return (data || []) as Region[];
+
+  // Fetch regions and company counts in parallel
+  const [{ data: regionsData }, { data: companiesData }] = await Promise.all([
+    supabase.from("regions").select("*").order("name", { ascending: true }),
+    supabase.from("companies").select("region"),
+  ]);
+
+  const regions = (regionsData || []) as Region[];
+  const companies = (companiesData || []) as { region: string | null }[];
+
+  // Count companies per region
+  const countMap: Record<string, number> = {};
+  for (const c of companies) {
+    if (c.region) {
+      countMap[c.region] = (countMap[c.region] || 0) + 1;
+    }
+  }
+
+  return regions.map((r) => ({
+    ...r,
+    computed_count: countMap[r.slug] || 0,
+  }));
 }
 
 function formatCategory(category: string | null): string {
@@ -66,7 +83,7 @@ export default async function RegionPage({ params }: RegionPageProps) {
   const [region, companies, allRegions] = await Promise.all([
     getRegion(slug),
     getCompaniesByRegion(slug),
-    getAllRegions(),
+    getAllRegionsWithCounts(),
   ]);
 
   if (!region) {
@@ -141,7 +158,7 @@ export default async function RegionPage({ params }: RegionPageProps) {
                             : "text-slate-400"
                         }`}
                       >
-                        {r.company_count}
+                        {r.computed_count}
                       </span>
                     </Link>
                   ))}

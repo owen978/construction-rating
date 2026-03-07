@@ -176,21 +176,40 @@ export default async function CompaniesPage({ searchParams }: Props) {
               >
                 Region:
               </label>
-              <select
-                id="region"
-                defaultValue={region}
-                onChange={(e) => {
-                  // Client-side navigation for select - use form instead
-                }}
-                className="px-3 py-1.5 rounded-lg border border-slate-200 text-sm bg-white"
-              >
-                <option value="">All Regions</option>
+              <div className="flex flex-wrap gap-1.5">
+                <a
+                  href={`/companies?${new URLSearchParams({
+                    ...(query && { q: query }),
+                    ...(category && { category }),
+                    ...(sort !== "name" && { sort }),
+                  }).toString()}`}
+                  className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
+                    !region
+                      ? "bg-[#1e3a5f] text-white"
+                      : "bg-white text-slate-600 border border-slate-200 hover:border-[#1e3a5f]"
+                  }`}
+                >
+                  All
+                </a>
                 {regions.map((r) => (
-                  <option key={r.slug} value={r.name}>
+                  <a
+                    key={r.slug}
+                    href={`/companies?${new URLSearchParams({
+                      ...(query && { q: query }),
+                      ...(category && { category }),
+                      region: r.name,
+                      ...(sort !== "name" && { sort }),
+                    }).toString()}`}
+                    className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
+                      region === r.name
+                        ? "bg-[#1e3a5f] text-white"
+                        : "bg-white text-slate-600 border border-slate-200 hover:border-[#1e3a5f]"
+                    }`}
+                  >
                     {r.name}
-                  </option>
+                  </a>
                 ))}
-              </select>
+              </div>
             </div>
           )}
 
