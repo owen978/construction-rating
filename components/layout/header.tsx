@@ -7,6 +7,7 @@ import { HardHat, Menu, X } from "lucide-react";
 const navLinks = [
   { href: "/", label: "Home" },
   { href: "/companies", label: "Companies" },
+  { href: "/regions", label: "Regions" },
   { href: "/about", label: "About" },
   { href: "/blog", label: "Blog" },
 ];

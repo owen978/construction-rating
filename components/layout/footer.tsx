@@ -95,6 +95,7 @@ export function Footer() {
                 { href: "/region/west-midlands", label: "West Midlands" },
                 { href: "/region/south-wales", label: "South Wales" },
                 { href: "/region/scotland", label: "Scotland" },
+                { href: "/regions", label: "All Regions →" },
               ].map((link) => (
                 <li key={link.href}>
                   <Link
